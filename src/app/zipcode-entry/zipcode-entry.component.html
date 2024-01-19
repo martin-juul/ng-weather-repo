@@ -1,8 +1,22 @@
 <div class="well">
-  <h2>Enter a zipcode:</h2>
-  <input type="text" #zipcode placeholder="Zipcode" class="form-control">
-  <br>
-  <button class="btn btn-primary" (click)="addLocation(zipcode.value)" >
-    Add location
-  </button>
+  <form>
+    <h2>Enter country</h2>
+    <app-typeahead
+      [items]="countries"
+      (itemSelected)="countrySelected($event)"
+    ></app-typeahead>
+
+    <h2>Enter a zipcode:</h2>
+    <input type="text" placeholder="Zipcode" class="form-control" [formControl]="zip">
+    <br>
+    <app-button
+      [state]="buttonState()"
+      (click)="addLocation()"
+    >
+      <ng-container *ngIf="buttonState() === 'default'">Add location</ng-container>
+      <ng-container *ngIf="buttonState() === 'loading'">Adding...</ng-container>
+      <ng-container *ngIf="buttonState() === 'success'">Done</ng-container>
+      <ng-container *ngIf="buttonState() === 'error'">Error</ng-container>
+    </app-button>
+  </form>
 </div>

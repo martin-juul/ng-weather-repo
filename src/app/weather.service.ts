@@ -1,62 +1,102 @@
-import {Injectable, Signal, signal} from '@angular/core';
-import {Observable} from 'rxjs';
+import { Injectable, Signal, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 
-import {HttpClient} from '@angular/common/http';
-import {CurrentConditions} from './current-conditions/current-conditions.type';
-import {ConditionsAndZip} from './conditions-and-zip.type';
-import {Forecast} from './forecasts-list/forecast.type';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { CurrentConditions } from './current-conditions/current-conditions.type';
+import { ConditionsAndZip } from './conditions-and-zip.type';
+import { Forecast } from './forecasts-list/forecast.type';
+
+const URL = 'https://api.openweathermap.org/data/2.5';
+const APPID = '5a4b2d457ecbef9eb2a71e480b947604';
+const ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
 
 @Injectable()
 export class WeatherService {
-
-  static URL = 'http://api.openweathermap.org/data/2.5';
-  static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
-  static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
   private currentConditions = signal<ConditionsAndZip[]>([]);
+  private updatingConditions = signal<boolean>(false);
 
-  constructor(private http: HttpClient) { }
-
-  addCurrentConditions(zipcode: string): void {
-    // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
-    this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
-      .subscribe(data => this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}]));
+  constructor(private http: HttpClient) {
   }
 
-  removeCurrentConditions(zipcode: string) {
-    this.currentConditions.update(conditions => {
-      for (let i in conditions) {
-        if (conditions[i].zip == zipcode)
-          conditions.splice(+i, 1);
-      }
-      return conditions;
-    })
+  getUpdatingConditions(): Signal<boolean> {
+    return this.updatingConditions.asReadonly();
   }
 
   getCurrentConditions(): Signal<ConditionsAndZip[]> {
     return this.currentConditions.asReadonly();
   }
 
-  getForecast(zipcode: string): Observable<Forecast> {
-    // Here we make a request to get the forecast data from the API. Note the use of backticks and an expression to insert the zipcode
-    return this.http.get<Forecast>(`${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`);
+  addCurrentConditions(countryCode: string, zip: string) {
+    const params = new HttpParams()
+      .set('zip', `${zip},${countryCode}`)
+      .set('units', 'imperial')
+      .set('cnt', '5')
+      .set('APPID', APPID);
 
+    return this.http.get<CurrentConditions>(`${URL}/weather`, { params })
+      .pipe(tap(data => {
+        this.currentConditions.update(conditions => [...conditions, { countryCode, zip, data }]);
+      }));
   }
 
-  getWeatherIcon(id): string {
-    if (id >= 200 && id <= 232)
-      return WeatherService.ICON_URL + "art_storm.png";
-    else if (id >= 501 && id <= 511)
-      return WeatherService.ICON_URL + "art_rain.png";
-    else if (id === 500 || (id >= 520 && id <= 531))
-      return WeatherService.ICON_URL + "art_light_rain.png";
-    else if (id >= 600 && id <= 622)
-      return WeatherService.ICON_URL + "art_snow.png";
-    else if (id >= 801 && id <= 804)
-      return WeatherService.ICON_URL + "art_clouds.png";
-    else if (id === 741 || id === 761)
-      return WeatherService.ICON_URL + "art_fog.png";
-    else
-      return WeatherService.ICON_URL + "art_clear.png";
+  removeCurrentConditions(countryCode: string, zip: string) {
+    this.currentConditions.update(conditions => {
+      for (const i in conditions) {
+        if (conditions[i].zip === zip && conditions[i].countryCode === countryCode) {
+          conditions.splice(+i, 1);
+        }
+      }
+      return conditions;
+    });
+  }
+
+  updateWeather() {
+    this.updatingConditions.update(() => true);
+
+    this.currentConditions.update(conditions => {
+      for (const condition in conditions) {
+        const params = new HttpParams()
+          .set('zip', `${conditions[condition].zip},${conditions[condition].countryCode}`)
+          .set('units', 'imperial')
+          .set('cnt', '5')
+          .set('APPID', APPID);
+
+        this.http.get<CurrentConditions>(`${URL}/weather`, { params })
+          .subscribe(data => conditions[condition].data = data);
+      }
+
+      this.updatingConditions.update(() => false);
+
+      return conditions;
+    });
+  }
+
+  getForecast(code: string, zipcode: string): Observable<Forecast> {
+    const params = new HttpParams()
+      .set('zip', `${zipcode},${code}`)
+      .set('units', 'imperial')
+      .set('cnt', '5')
+      .set('APPID', APPID);
+
+    return this.http.get<Forecast>(`${URL}/forecast/daily`, { params });
+  }
+
+  getWeatherIcon(id: number): string {
+    if (id >= 200 && id <= 232) {
+      return ICON_URL + 'art_storm.png';
+    } else if (id >= 501 && id <= 511) {
+      return ICON_URL + 'art_rain.png';
+    } else if (id === 500 || (id >= 520 && id <= 531)) {
+      return ICON_URL + 'art_light_rain.png';
+    } else if (id >= 600 && id <= 622) {
+      return ICON_URL + 'art_snow.png';
+    } else if (id >= 801 && id <= 804) {
+      return ICON_URL + 'art_clouds.png';
+    } else if (id === 741 || id === 761) {
+      return ICON_URL + 'art_fog.png';
+    } else {
+      return ICON_URL + 'art_clear.png';
+    }
   }
 
 }

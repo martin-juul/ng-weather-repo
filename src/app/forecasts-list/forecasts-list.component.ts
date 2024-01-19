@@ -9,14 +9,16 @@ import {Forecast} from './forecast.type';
   styleUrls: ['./forecasts-list.component.css']
 })
 export class ForecastsListComponent {
-
+  countryCode: string;
   zipcode: string;
   forecast: Forecast;
 
   constructor(protected weatherService: WeatherService, route : ActivatedRoute) {
     route.params.subscribe(params => {
+      this.countryCode = params['countryCode'];
       this.zipcode = params['zipcode'];
-      weatherService.getForecast(this.zipcode)
+
+      weatherService.getForecast(this.countryCode, this.zipcode)
         .subscribe(data => this.forecast = data);
     });
   }
