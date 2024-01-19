@@ -14,12 +14,16 @@ export class CurrentConditionsComponent implements OnInit, OnDestroy {
   updatingWeather = this.weatherService.getUpdatingConditions();
   currentConditionsByZip = this.weatherService.getCurrentConditions();
 
-  protected locationService = inject(LocationService);
+  private locationService = inject(LocationService);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
-  showForecast(zipcode: string) {
-    this.router.navigate(['/forecast', zipcode]);
+  showForecast(countryCode: string, zipcode: string) {
+    this.router.navigate(['/forecast', countryCode, zipcode]);
+  }
+
+  removeLocation(countryCode: string, zipcode: string) {
+    this.locationService.removeLocation(countryCode, zipcode);
   }
 
   ngOnInit() {

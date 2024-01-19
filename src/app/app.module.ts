@@ -16,6 +16,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { ButtonComponent } from './button/button.component';
 import { TypeaheadComponent } from './typeahead/typeahead.component';
+import { WeatherIconPipe } from './weather-icon.pipe';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { TypeaheadComponent } from './typeahead/typeahead.component';
     ButtonComponent,
     ReactiveFormsModule,
     TypeaheadComponent,
+    WeatherIconPipe,
   ],
   providers: [LocationService, WeatherService],
   bootstrap: [AppComponent]

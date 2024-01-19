@@ -61,8 +61,6 @@ export class TypeaheadComponent implements OnInit {
 
   control = new FormControl<string>('');
 
-  constructor() {}
-
   ngOnInit() {
     this.control.valueChanges.subscribe(value => {
       if (!value) {

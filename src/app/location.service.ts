@@ -17,7 +17,7 @@ export class LocationService {
     const locString = localStorage.getItem(LOCATIONS);
 
     if (locString) {
-      this.locations = JSON.parse(locString) as unknown as CountryCodeAndZip[];
+      this.locations = JSON.parse(locString) as CountryCodeAndZip[];
     }
 
     for (const {countryCode, zip} of this.locations) {

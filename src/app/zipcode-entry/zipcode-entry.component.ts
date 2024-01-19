@@ -1,8 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { LocationService } from '../location.service';
 import { ButtonState } from '../button/button.component';
 import { catchError, delay, of, tap } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { countries } from '../countries';
 import { LabelValue } from '../typeahead/typeahead.component';
 
@@ -17,8 +17,7 @@ export class ZipcodeEntryComponent {
   country: string|null = null;
   zip = new FormControl('');
 
-  constructor(private service: LocationService) {
-  }
+  private service = inject(LocationService);
 
   countrySelected(country: LabelValue) {
     this.country = country.value ?? null;
@@ -28,7 +27,6 @@ export class ZipcodeEntryComponent {
     this.buttonState.set('loading');
 
     const zip = this.zip;
-    console.log(zip);
 
     if (!this.country || !zip.valid) {
       return;
