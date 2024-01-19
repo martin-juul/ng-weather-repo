@@ -30,6 +30,7 @@ export const countries: Country[] = [
   { code: 'TL', name: 'Timor-Leste' },
   { code: 'TM', name: 'Turkmenistan' },
   { code: 'TN', name: 'Tunisia' },
+  { code: 'US', name: 'United States' },
   { code: 'VN', name: 'Vietnam' },
   { code: 'EH', name: 'Western Sahara' },
   { code: 'YE', name: 'Yemen' },
