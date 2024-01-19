@@ -81,8 +81,8 @@ export class TypeaheadComponent implements OnInit {
         const matched = label.slice(index, value.length);
         const rest = label.slice(index + value.length);
         return {
-          ...item,
           label: `<b>${matched}</b>${rest}`,
+          value: item.value
         };
       });
     });
