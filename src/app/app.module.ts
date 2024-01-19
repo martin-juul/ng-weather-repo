@@ -4,16 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
-import {LocationService} from "./location.service";
+import { LocationService } from './location.service';
 import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
-import {WeatherService} from "./weather.service";
+import { WeatherService } from './weather.service';
 import { CurrentConditionsComponent } from './current-conditions/current-conditions.component';
 import { MainPageComponent } from './main-page/main-page.component';
-import {RouterModule} from "@angular/router";
-import {routing} from "./app.routing";
-import {HttpClientModule} from "@angular/common/http";
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import { RouterModule } from '@angular/router';
+import { routing } from './app.routing';
+import { HttpClientModule } from '@angular/common/http';
 import { ButtonComponent } from './button/button.component';
 import { TypeaheadComponent } from './typeahead/typeahead.component';
 import { WeatherIconPipe } from './weather-icon.pipe';
@@ -24,7 +22,7 @@ import { WeatherIconPipe } from './weather-icon.pipe';
     ZipcodeEntryComponent,
     ForecastsListComponent,
     CurrentConditionsComponent,
-    MainPageComponent
+    MainPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,13 +30,12 @@ import { WeatherIconPipe } from './weather-icon.pipe';
     HttpClientModule,
     RouterModule,
     routing,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     ButtonComponent,
     ReactiveFormsModule,
     TypeaheadComponent,
     WeatherIconPipe,
   ],
   providers: [LocationService, WeatherService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
