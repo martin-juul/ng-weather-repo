@@ -3,6 +3,7 @@ export const countries: Country[] = [
   { code: 'AX', name: 'Aland Islands' },
   { code: 'AL', name: 'Albania' },
   { code: 'DZ', name: 'Algeria' },
+  { code: 'AU', name: 'Australia' },
   { code: 'DK', name: 'Denmark' },
   { code: 'DJ', name: 'Djibouti' },
   { code: 'DM', name: 'Dominica' },
