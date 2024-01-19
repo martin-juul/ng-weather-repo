@@ -92,4 +92,8 @@ export class TypeaheadComponent implements OnInit {
     this.typeAheadItems = [];
     this.itemSelected.emit(item);
   }
+
+  reset() {
+    this.control.reset();
+  }
 }
